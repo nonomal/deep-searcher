@@ -1,9 +1,14 @@
-# DeepSearcher
+![DeepSearcher](./assets/pic/logo.png)
 
+<div align="center">
+  
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/zilliz_universe.svg?style=social&label=Follow%20%40Zilliz)](https://twitter.com/zilliz_universe)
-  <a href="https://discord.gg/mKc3R95yE5"><img height="20" src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white" alt="discord"/></a>
+<a href="https://discord.gg/mKc3R95yE5"><img height="20" src="https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white" alt="discord"/></a>
 
+</div>
+
+---
 
 DeepSearcher combines cutting-edge LLMs (OpenAI o1, o3-mini, DeepSeek, Grok 3, Claude 3.7 Sonnet, Llama 4, QwQ, etc.) and Vector Databases (Milvus, Zilliz Cloud etc.) to perform search, evaluation, and reasoning based on private data, providing highly accurate answer and comprehensive report. This project is suitable for enterprise knowledge management, intelligent Q&A systems, and information retrieval scenarios.
 
@@ -26,23 +31,43 @@ DeepSearcher combines cutting-edge LLMs (OpenAI o1, o3-mini, DeepSeek, Grok 3, C
 ## 📖 Quick Start
 
 ### Installation
-Install DeepSearcher using pip:
+Install DeepSearcher using one of the following methods:
+
+#### Option 1: Using pip
+Create and activate a virtual environment(Python 3.10 version is recommended).
 ```bash
-# Clone the repository
-git clone https://github.com/zilliztech/deep-searcher.git
-
-# MAKE SURE the python version is greater than or equal to 3.10
-# Recommended: Create a Python virtual environment
-cd deep-searcher
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
-
-# Install dependencies
-pip install -e .
 ```
-Prepare your `OPENAI_API_KEY` in your environment variables. If you change the LLM in the configuration, make sure to prepare the corresponding API key.
+Install DeepSearcher
+```bash
+pip install deepsearcher
+```
+
+For optional dependencies, e.g., ollama:
+```bash
+pip install "deepsearcher[ollama]"
+```
+
+#### Option 2: Install in Development Mode
+We recommend using [uv](https://github.com/astral-sh/uv) for faster and more reliable installation. Follow the [offical installation instructions](https://docs.astral.sh/uvgetting-started/installation/) to install it.
+
+Clone the repository and navigate to the project directory:
+```shell
+git clone https://github.com/zilliztech/deep-searcher.git && cd deep-searcher
+```
+Synchronize and install dependencies:
+```shell
+uv sync
+source .venv/bin/activate
+```
+
+For more detailed development setup and optional dependency installation options, see [CONTRIBUTING.md](CONTRIBUTING.md#development-environment-setup-with-uv).
 
 ### Quick start demo
+
+To run this quick start demo, please prepare your `OPENAI_API_KEY` in your environment variables. If you change the LLM in the configuration, make sure to prepare the corresponding API key.
+
 ```python
 from deepsearcher.configuration import Configuration, init_config
 from deepsearcher.online_query import query
@@ -70,7 +95,7 @@ result = query("Write a report about xxx.") # Your question here
 #### LLM Configuration
 
 <pre><code>config.set_provider_config("llm", "(LLMName)", "(Arguments dict)")</code></pre>
-<p>The "LLMName" can be one of the following: ["DeepSeek", "OpenAI", "XAI", "SiliconFlow", "PPIO", "TogetherAI", "Gemini", "Ollama"]</p>
+<p>The "LLMName" can be one of the following: ["DeepSeek", "OpenAI", "XAI", "SiliconFlow", "PPIO", "TogetherAI", "Gemini", "Ollama", "Novita"]</p>
 <p> The "Arguments dict" is a dictionary that contains the necessary arguments for the LLM class.</p>
 
 <details>
@@ -165,9 +190,16 @@ result = query("Write a report about xxx.") # Your question here
     <p> You need to install boto3 before running, execute: <code>pip install boto3</code>. More details about Amazon Bedrock: https://docs.aws.amazon.com/bedrock/ </p>
 </details>
 
+<details>
+  <summary>Example (Aliyun Bailian)</summary>
+    <p> Make sure you have prepared your Bailian API KEY as an env variable <code>DASHSCOPE_API_KEY</code>.</p>
+    <pre><code>config.set_provider_config("llm", "Aliyun", {"model": "deepseek-r1"})</code></pre>
+    <p> More details about Aliyun Bailian models: https://bailian.console.aliyun.com </p>
+</details>
+
 #### Embedding Model Configuration
 <pre><code>config.set_provider_config("embedding", "(EmbeddingModelName)", "(Arguments dict)")</code></pre>
-<p>The "EmbeddingModelName" can be one of the following: ["MilvusEmbedding", "OpenAIEmbedding", "VoyageEmbedding", "SiliconflowEmbedding", "PPIOEmbedding"]</p>
+<p>The "EmbeddingModelName" can be one of the following: ["MilvusEmbedding", "OpenAIEmbedding", "VoyageEmbedding", "SiliconflowEmbedding", "PPIOEmbedding", "NovitaEmbedding"]</p>
 <p> The "Arguments dict" is a dictionary that contains the necessary arguments for the embedding model class.</p>
 
 <details>
@@ -199,6 +231,13 @@ result = query("Write a report about xxx.") # Your question here
   <summary>Example (Amazon Bedrock embedding)</summary>
   <pre><code>config.set_provider_config("embedding", "BedrockEmbedding", {"model": "amazon.titan-embed-text-v2:0"})</code></pre>
   <p> You need to install boto3 before running, execute: <code>pip install boto3</code>. More details about Amazon Bedrock: https://docs.aws.amazon.com/bedrock/ </p>
+</details>
+
+<details>
+  <summary>Example (Novita AI embedding)</summary>
+    <p> Make sure you have prepared your Novita AI API KEY as an env variable <code>NOVITA_API_KEY</code>.</p>
+    <pre><code>config.set_provider_config("embedding", "NovitaEmbedding", {"model": "baai/bge-m3"})</code></pre>
+    <p> More details about Novita AI: https://novita.ai/docs/api-reference/model-apis-llm-create-embeddings?utm_source=github_deep-searcher&utm_medium=github_readme&utm_campaign=link </p>
 </details>
 
 <details>
@@ -282,10 +321,35 @@ result = query("Write a report about xxx.") # Your question here
 
 <details>
   <summary>Example (Unstructured)</summary>
-    <p> Make sure you have prepared your Unstructured API KEY and API URL as env variables <code>UNSTRUCTURED_API_KEY</code> and <code>UNSTRUCTURED_API_URL</code>.</p>
+    <p>You can use Unstructured in two ways:</p>
+    <ul>
+      <li>With API: Set environment variables <code>UNSTRUCTURED_API_KEY</code> and <code>UNSTRUCTURED_API_URL</code></li>
+      <li>Without API: Use the local processing mode by simply not setting these environment variables</li>
+    </ul>
     <pre><code>config.set_provider_config("file_loader", "UnstructuredLoader", {})</code></pre>
-    <p> Currently supported file types: ["pdf"] (Under development) </p>
-    <p> You need to install unstructured-ingest before running, execute: <code>pip install unstructured-ingest</code>. More details about Unstructured: https://docs.unstructured.io/ingestion/overview </p>
+    <ul>
+      <li>Currently supported file types: ["pdf"] (Under development)</li>
+      <li>Installation requirements:
+        <ul>
+          <li>Install ingest pipeline: <code>pip install unstructured-ingest</code></li>
+          <li>For all document formats: <code>pip install "unstructured[all-docs]"</code></li>
+          <li>For specific formats (e.g., PDF only): <code>pip install "unstructured[pdf]"</code></li>
+        </ul>
+      </li>
+      <li>More information:
+        <ul>
+          <li>Unstructured documentation: <a href="https://docs.unstructured.io/ingestion/overview">https://docs.unstructured.io/ingestion/overview</a></li>
+          <li>Installation guide: <a href="https://docs.unstructured.io/open-source/installation/full-installation">https://docs.unstructured.io/open-source/installation/full-installation</a></li>
+        </ul>
+      </li>
+    </ul>
+</details>
+
+<details>
+  <summary>Example (Docling)</summary>
+    <pre><code>config.set_provider_config("file_loader", "DoclingLoader", {})</code></pre>
+    <p> Currently supported file types: please refer to the Docling documentation: https://docling-project.github.io/docling/usage/supported_formats/#supported-output-formats </p>
+    <p> You need to install docling before running, execute: <code>pip install docling</code>. More details about Docling: https://docling-project.github.io/docling/ </p>
 </details>
 
 #### Web Crawler Configuration
@@ -312,6 +376,13 @@ result = query("Write a report about xxx.") # Your question here
     <p> Make sure you have prepared your Jina Reader API KEY as an env variable <code>JINA_API_TOKEN</code> or <code>JINAAI_API_KEY</code>.</p>
     <pre><code>config.set_provider_config("web_crawler", "JinaCrawler", {})</code></pre>
     <p> More details about Jina Reader: https://jina.ai/reader/ </p>
+</details>
+
+<details>
+  <summary>Example (Docling)</summary>
+    <pre><code>config.set_provider_config("web_crawler", "DoclingCrawler", {})</code></pre>
+    <p> Currently supported file types: please refer to the Docling documentation: https://docling-project.github.io/docling/usage/supported_formats/#supported-output-formats </p>
+    <p> You need to install docling before running, execute: <code>pip install docling</code>. More details about Docling: https://docling-project.github.io/docling/ </p>
 </details>
 
 
@@ -420,6 +491,7 @@ nest_asyncio.apply()
 - [Amazon Bedrock](https://docs.aws.amazon.com/bedrock/) (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` env variable required)
 - [FastEmbed](https://qdrant.github.io/fastembed/)
 - [PPIO](https://ppinfra.com/model-api/product/llm-api?utm_source=github_deep-searcher) (`PPIO_API_KEY` env variable required)
+- [Novita AI](https://novita.ai/docs/api-reference/model-apis-llm-create-embeddings?utm_source=github_deep-searcher&utm_medium=github_readme&utm_campaign=link) (`NOVITA_API_KEY` env variable required)
 
 ### 🔹 LLM Support
 - [OpenAI](https://platform.openai.com/docs/models) (`OPENAI_API_KEY` env variable required)
@@ -432,6 +504,7 @@ nest_asyncio.apply()
 - [Google Gemini](https://ai.google.dev/gemini-api/docs) (`GEMINI_API_KEY` env variable required)
 - [SambaNova Cloud Inference Service](https://docs.together.ai/docs/introduction) (`SAMBANOVA_API_KEY` env variable required)
 - [Ollama](https://ollama.com/)
+- [Novita AI](https://novita.ai/docs/guides/introduction?utm_source=github_deep-searcher&utm_medium=github_readme&utm_campaign=link) (`NOVITA_API_KEY` env variable required)
 
 ### 🔹 Document Loader
 - Local File
